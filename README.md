@@ -1,6 +1,6 @@
 # ASCII-artgen
 
-A simple ASCII art generator written in Python with [Pillow](https://pypi.org/project/pillow/) lib.A
+A simple ASCII art generator written in Python with [Pillow](https://pypi.org/project/pillow/) lib.
 
 ## Examples
 

@@ -1,6 +1,10 @@
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+from prompt_toolkit import PromptSession
+from prompt_toolkit.completion import WordCompleter
 
+import glob
 import math
+import os
 
 GRADIENT = ".:coPO?@"
 
@@ -20,12 +24,31 @@ def getGradient(brightness):
 
 
 txt_file = open("output.txt", "w")
-# path to the image
-im = Image.open("../assets/samples/Beluga.jpg")
+
+# samples autocomplete on <Tab>
+script_dir = os.path.dirname(__file__)
+samples_dir = os.path.join(script_dir, '..', 'assets', 'samples')
+samples_dir = os.path.normpath(samples_dir)
+images = [os.path.basename(p) for p in sorted(
+    glob.glob(os.path.join(samples_dir, '*')))]
+
+images_completer = WordCompleter(images, ignore_case=True)
+
+while True:
+    session = PromptSession(completer=images_completer,
+                            complete_while_typing=True)
+    try:
+        image_file = session.prompt(
+            "Enter the filename from '/samples' with extension: ")
+        im = Image.open(os.path.join(samples_dir, image_file))
+        print(f"{image_file} loaded successfully.")
+        break
+    except FileNotFoundError:
+        print("File not found. Please try again.")
 
 # you can set your own font
 font = ImageFont.truetype(
-    "../assets/fonts/NotoMonoNerdFontMono-Regular.ttf", 13)
+    "../assets/fonts/NotoSansMNerdFontMono-CondensedBlack.ttf", 13)
 
 # normalize EXIF orientation
 im = ImageOps.exif_transpose(im)
